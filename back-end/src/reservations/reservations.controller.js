@@ -37,25 +37,45 @@ if (!reservation) {
 }
 
 complete_fields.forEach((input) => {
-  if(!reservation[input]) {
-    return next ({ status: 400, message: `${input} field required` });
-  }
-  
-  if(input === "people" && typeof reservation[input] !== "number") {
-    return next({ status: 400, message: `${reservation[input]} is not a number type for people field.` });
+  if (!reservation[input]) {
+    return next({ status: 400, message: `${input} field required` });
   }
 
-  if(input === "reservation_date" && ~Date.parse(reservation[input])) {
+  if (input === "people" && typeof reservation[input] !== "number") {
+    return next({
+      status: 400,
+      message: `${reservation[input]} is not a number type for people field.`,
+    });
+  }
+
+  if (input === "reservation_date" && !Date.parse(reservation[input])) {
     return next({ status: 400, message: `${input} is not a valid date.` });
   }
 
-  if(input === "reservation_time") {
-    if(!validateTime(reservation[input])) {
-      return next({ status: 400, message: `${input} is not a valid time.` });
+  if (input === "reservation_time") {
+    if (!validateTime(reservation[input])) {
+      return next({ status: 400, message: `${input} is not a valid time` });
     }
   }
 });
 next();
+}
+
+function inTheFuture(req, res, next) {
+  const today = new Date();
+  const reservationDate = new Date(req.body.data.reservation_date);
+
+  if (reservationDate < today) {
+    return next({ status: 400, message: "Reservation date must be in the future." });
+  };
+}
+
+function notOnTuesday(req, res, next) {
+  const reservationDay = reservationDate.getUTCDay(); //getUTCDay returns day of the week in number format
+
+  if (reservationDay === 2) { //2 is for Tuesday
+    return next({ status: 400, message: "The restaurant is closed on Tuesdays." });
+  };
 }
 
 /**
@@ -77,7 +97,7 @@ async function list(req, res) {
 /**
  * Create handler
  */
-async function create(rew, res) {
+async function create(req, res) {
   const reservation = req.body.data;
   const { reservation_id } = await service.create(reservation);
   reservation.reservation_id = reservation_id;
@@ -87,8 +107,10 @@ async function create(rew, res) {
 
 module.exports = {
   list: asyncErrorBoundary(list),
-  create: [,
+  create: [
     asyncErrorBoundary(validReservation),
-    asyncErrorBoundary(create)
+    inTheFuture,
+    notOnTuesday,
+    asyncErrorBoundary(create),
   ],
-};
+}
