@@ -87,8 +87,8 @@ async function create(rew, res) {
 
 module.exports = {
   list: asyncErrorBoundary(list),
-  create: [
-    asyncErrorBoundary(create),
+  create: [,
     asyncErrorBoundary(validReservation),
-  ]
+    asyncErrorBoundary(create)
+  ],
 };
