@@ -89,7 +89,6 @@ module.exports = {
   list: asyncErrorBoundary(list),
   create: [
     asyncErrorBoundary(create),
-    validateTime,
-    validReservation,
+    asyncErrorBoundary(validReservation),
   ]
 };
