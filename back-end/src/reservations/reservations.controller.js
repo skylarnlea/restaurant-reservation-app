@@ -54,7 +54,7 @@ complete_fields.forEach((input) => {
 
   if (input === "reservation_time") {
     if (!validateTime(reservation[input])) {
-      return next({ status: 400, message: `${input} is not a valid time` });
+      return next({ status: 400, message: `${input} is not a valid time.` });
     }
   }
 });
