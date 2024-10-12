@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { createReservation } from "../utils/api";
-import { notOnTuesday } from "../utils/date-time";
-import { inTheFuture } from "../utils/date-time";
-import ErrorAlert from "../layout/ErrorAlert";
+import { createReservation } from "../../utils/api";
+import { notOnTuesday } from "../../utils/date-time";
+import { inTheFuture } from "../../utils/date-time";
+import ErrorAlert from "../../layout/ErrorAlert";
 
 export default function ReservationCreate() {
     const history = useHistory();
@@ -17,6 +17,7 @@ export default function ReservationCreate() {
     };
     
     const [formData, setFormData] = useState({ ...initialFormData });
+    const [reservationsError, setReservationsError] = useState(null);
 
     const handleCancel = () => {
       history.goBack();
