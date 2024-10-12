@@ -5,7 +5,7 @@ import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
-import ReservationCreate from "../reservations/ReservationCreate";
+import ReservationCreate from "../reservations/new/ReservationCreate";
 
 /**
  * Defines all the routes for the application.
