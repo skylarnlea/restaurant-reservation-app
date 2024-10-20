@@ -78,6 +78,36 @@ function notOnTuesday(req, res, next) {
   };
 }
 
+function withinOperationHours(req, res, next){
+  const reservation = req.body.data;
+  const [hour, minute] = reservation.reservation_time.split(":");
+  
+  if (hour < 10 || hour > 21) {
+    return next({ status: 400, message: "Reservation must be made within business hours",
+    });
+  }
+
+  if ((hour < 11 && minute < 30 || hours > 20 && minute > 30)) {
+    return next({ status: 400, message: "Reservation must be made within business hours",
+    });
+  }
+  next();
+}
+
+const reservationExists = async(req, res, next) => {
+  const { reservation_Id } = req.params;
+  const reservation = await service.read(reservation_Id);
+
+  if(reservation){
+    res.locals.reservation = reservation;
+    return next();
+  }
+  next({
+    status: 404,
+    message: `Reservation_id ${reservation_Id} does not exist.`,
+  });
+}
+
 /**
  * List handler for reservation resources
  */
@@ -104,6 +134,13 @@ async function create(req, res) {
   res.status(201).json({ data: reservation });
 }
 
+/**
+ * Read Handler
+ */
+async function read(req, res) {
+  const reservation = res.locals.reservation;
+  res.json({ data: reservation });
+}
 
 module.exports = {
   list: asyncErrorBoundary(list),
@@ -111,6 +148,11 @@ module.exports = {
     asyncErrorBoundary(validReservation),
     inTheFuture,
     notOnTuesday,
+    withinOperationHours,
     asyncErrorBoundary(create),
+  ],
+  read: [
+    asyncErrorBoundary(reservationExists), 
+    asyncErrorBoundary(read)
   ],
 }
