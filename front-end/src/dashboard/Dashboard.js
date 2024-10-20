@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useHistory } from "react-router-dom";
 import { previous, next } from "../utils/date-time";
@@ -12,6 +12,7 @@ import { previous, next } from "../utils/date-time";
  */
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
+  const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const history = useHistory();
 
@@ -22,6 +23,8 @@ function Dashboard({ date }) {
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
       .then(setReservations)
+      .then(listTables)
+      .then(setTables)
       .catch(setReservationsError);
     return () => abortController.abort();
   }
