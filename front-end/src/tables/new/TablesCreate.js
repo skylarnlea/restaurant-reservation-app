@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import createTable from "../../utils/api";
+import { createTable } from "../../utils/api";
 import ErrorAlert from "../../layout/ErrorAlert";
 
 export default function TablesCreate() {
