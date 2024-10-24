@@ -46,6 +46,7 @@ return (
         </div>
         <ErrorAlert error={tableError} />
         <form onSubmit={handleSubmit}>
+            <label for="table_name">Table Name:</label>
             <input 
                 type="text"
                 name="table_name"
@@ -57,6 +58,8 @@ return (
                 minLength={2}
                 required
             />
+
+            <label for="capacity">Capacity:</label>
             <input 
                 type="number"
                 name="capacity"
